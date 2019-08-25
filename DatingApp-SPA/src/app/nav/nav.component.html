@@ -1,15 +1,15 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-primary">
-  <a class="navbar-brand marginLeft " href="#">Dating App</a>
+  <a class="navbar-brand marginLeft " [routerLink]="['/home']">Dating App</a>
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto" *ngIf="loggedIn()">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Matches <span class="sr-only">(current)</span></a>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/members']">Matches <span class="sr-only">(current)</span></a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Lists</a>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="['/lists']">Lists</a>
       </li>
-      <li class="nav-item">
-        <a class="nav-link " href="#">Messages</a>
+      <li class="nav-item" routerLinkActive="active">
+        <a class="nav-link " [routerLink]="['/messages']">Messages</a>
       </li>
     </ul>
     <div style="margin-right: 70px" *ngIf="loggedIn()" class="dropdown" dropdown>
