@@ -16,11 +16,12 @@ import { MessagesComponent } from './messages/messages.component';
 import { ListsComponent } from './lists/lists.component';
 import { RouterModule } from '@angular/router';
 import { appRoutes } from './routes';
+import { UserService } from './_services/user.service';
 
 @NgModule({
   declarations: [AppComponent, NavComponent, HomeComponent, RegisterComponent, MemberListComponent, MessagesComponent, ListsComponent],
   imports: [BrowserModule, FormsModule, HttpClientModule, BsDropdownModule.forRoot(), RouterModule.forRoot(appRoutes)],
-  providers: [AuthService, ErrorInterceptorProvider, AlertifyService, AuthGuard],
+  providers: [AuthService, ErrorInterceptorProvider, AlertifyService, AuthGuard, UserService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
