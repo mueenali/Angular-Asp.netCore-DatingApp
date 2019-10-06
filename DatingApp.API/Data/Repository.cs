@@ -1,43 +1,55 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using DatingApp.API.Data.RepositoryInterfaces;
 using DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.API.Data
 {
-    public class Repository : IRepository
+    public abstract class Repository<T> : IRepository<T> where T : class
     {
         private readonly DataContext _context;
 
         public Repository(DataContext context)
         {
-            this._context = context;
+            _context = context;
         }
-        public void Add<T>(T entity) where T : class
+        public void Add(T entity)
         {
-            _context.Add(entity);
-        }
-
-        public void Delete<T>(T entity) where T : class
-        {
-            _context.Remove(entity);
+            _context.Set<T>().Add(entity);
         }
 
-        public async Task<User> GetUser(int id)
+        public void Delete(T entity)
         {
-            var user = await _context.Users.Include(p => p.Photos).FirstOrDefaultAsync(u => u.ID == id);
-            return user;
+            _context.Set<T>().Remove(entity);
+        }
+        public void Update(T entity)
+        {
+            _context.Set<T>().Update(entity);
         }
 
-        public async Task<IEnumerable<User>> GetUsers()
+        public async Task<IEnumerable<T>> GetAll()
         {
-            var users = await _context.Users.Include(p => p.Photos).ToListAsync();
-            return users;
+            return await _context.Set<T>().AsNoTracking().ToListAsync();
         }
-
-        public async Task<bool> SaveAll()
+        public async Task<IEnumerable<T>> GetAllWithInclude<P>(Expression<Func<T, P>> predicate)
         {
-            return await _context.SaveChangesAsync() > 0;
+            return await _context.Set<T>().AsNoTracking().Include(predicate).ToListAsync();
+        }
+        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
+        {
+            return _context.Set<T>().Where(predicate);
+        }
+        public async Task<T> GetEntity(int id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+        public async Task<T> GetEntityWithInclude<P>(Expression<Func<T, P>> predicate, Expression<Func<T, bool>> predicate2)
+        {
+            return await _context.Set<T>().Include(predicate).FirstOrDefaultAsync(predicate2);
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
-using DatingApp.API.Data;
+using DatingApp.API.Data.RepositoryInterfaces;
 using DatingApp.API.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,20 +16,20 @@ namespace DatingApp.API.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly IRepository _repo;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public UsersController(IRepository repo, IMapper mapper)
+        public UsersController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            this._repo = repo;
-            this._mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         [HttpGet]
 
         public async Task<IActionResult> GetUser()
         {
-            var users = await _repo.GetUsers();
+            var users = await _unitOfWork.userRepository.GetAllWithInclude(u => u.Photos);
             var returnedUsers = _mapper.Map<IEnumerable<UserListDto>>(users);
             return Ok(returnedUsers);
         }
@@ -38,7 +38,7 @@ namespace DatingApp.API.Controllers
 
         public async Task<IActionResult> GetUser(int id)
         {
-            var user = await _repo.GetUser(id);
+            var user = await _unitOfWork.userRepository.GetEntityWithInclude(u => u.Photos, u => u.ID == id);
             var returnedUser = _mapper.Map<UserDetailsDto>(user);
             return Ok(returnedUser);
         }
@@ -50,10 +50,10 @@ namespace DatingApp.API.Controllers
             if (id != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var user = await _repo.GetUser(id);
+            var user = await _unitOfWork.userRepository.GetEntity(id);
             _mapper.Map(userUpdateDto, user);
-
-            if (await _repo.SaveAll())
+            _unitOfWork.userRepository.Update(user);
+            if (await _unitOfWork.Commit())
                 return NoContent();
 
             throw new Exception($"Updating user {id} failed on save");

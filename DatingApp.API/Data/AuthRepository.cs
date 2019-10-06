@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using DatingApp.API.Data.RepositoryInterfaces;
 using DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,18 +11,17 @@ namespace DatingApp.API.Data
         private readonly DataContext _context;
         public AuthRepository(DataContext context)
         {
-            this._context = context;
+            _context = context;
 
         }
         public async Task<User> Login(string username, string password)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            var user = await _context.Users.Include(u => u.Photos).FirstOrDefaultAsync(u => u.Username == username);
             if (user == null)
                 return null;
 
             if (!PasswordHashVerify(password, user.PasswordHash, user.PasswordSalt))
                 return null;
-
 
             return user;
 
