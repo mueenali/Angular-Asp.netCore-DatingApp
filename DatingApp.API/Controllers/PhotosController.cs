@@ -123,6 +123,7 @@ namespace DatingApp.API.Controllers
             else if (result == "bad request")
                 return BadRequest("You cannot delete your main photo");
 
+
             var photo = await _unitOfWork.photoRepository.GetEntity(id);
             if (photo.PublicId != null)
             {
