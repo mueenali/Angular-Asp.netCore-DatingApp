@@ -1,5 +1,5 @@
-import { AlertifyService } from './../../_services/alertify.service';
-import { UserService } from './../../_services/user.service';
+import { AlertifyService } from '../../_services/alertify.service';
+import { UserService } from '../../_services/user.service';
 import { Component, OnInit } from '@angular/core';
 import { User } from 'src/app/_models/user';
 import { ActivatedRoute } from '@angular/router';
@@ -30,19 +30,19 @@ export class MemberDetailsComponent implements OnInit {
         preview: false
       }
     ];
-    this.getImages();
+    this.galleryImages = this.getImages();
   }
 
   getImages() {
+    const imageUrls = [];
     for (let i = 0; i < this.user.photos.length; i++) {
-      this.galleryImages = [
-        {
-          small: this.user.photos[i].url,
-          medium: this.user.photos[i].url,
-          big: this.user.photos[i].url,
-          description: this.user.photos[i].description
-        }
-      ];
+      imageUrls.push({
+        small: this.user.photos[i].url,
+        medium: this.user.photos[i].url,
+        big: this.user.photos[i].url,
+        description: this.user.photos[i].description
+      });
     }
+    return imageUrls;
   }
 }

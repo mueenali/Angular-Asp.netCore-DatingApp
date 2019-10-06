@@ -10,7 +10,7 @@ import { User } from '../../_models/user';
   styleUrls: ['./member-list.component.css']
 })
 export class MemberListComponent implements OnInit {
-  users: User[];
+  users: Set<User>;
   constructor(private userService: UserService, private alertify: AlertifyService, private route: ActivatedRoute) {}
 
   ngOnInit() {

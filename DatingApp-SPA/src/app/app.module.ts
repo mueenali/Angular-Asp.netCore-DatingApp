@@ -26,6 +26,9 @@ import { JwtModule } from '@auth0/angular-jwt';
 import { NgxGalleryModule } from 'ngx-gallery';
 import { MemberListResolver } from './_resolvers/memberList.resolver';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { PhotoManagementComponent } from './members/photo-management/photo-management.component';
+import {FileUploadModule} from 'ng2-file-upload';
+import {PhotoService} from './_services/photo.service';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -42,7 +45,8 @@ export function tokenGetter() {
     ListsComponent,
     MemberCardComponent,
     MemberDetailsComponent,
-    MemberEditComponent
+    MemberEditComponent,
+    PhotoManagementComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +62,8 @@ export function tokenGetter() {
         whitelistedDomains: ['localhost:5000'],
         blacklistedRoutes: ['localhost:5000/api/auth']
       }
-    })
+    }),
+    FileUploadModule
   ],
   providers: [
     AuthService,
@@ -67,6 +72,7 @@ export function tokenGetter() {
     AuthGuard,
     UnsavedChangesGuard,
     UserService,
+    PhotoService,
     MemberDetailResolver,
     MemberEditResolver,
     MemberListResolver

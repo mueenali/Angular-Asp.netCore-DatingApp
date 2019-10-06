@@ -1,6 +1,6 @@
 import { Photo } from './photo';
 
-export interface User {
+export class User {
   id: number;
   username: string;
   knownAs: string;
@@ -14,5 +14,5 @@ export interface User {
   interests?: string;
   introduction?: string;
   lookingFor?: string;
-  photos?: Photo[];
+  photos?: Photo [];
 }
