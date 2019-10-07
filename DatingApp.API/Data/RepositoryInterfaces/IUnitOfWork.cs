@@ -9,6 +9,7 @@ namespace DatingApp.API.Data.RepositoryInterfaces
         IAuthRepository authRepository { get; }
         IUserRepository userRepository { get; }
         IPhotoRepository photoRepository { get; }
+        IStorageService storageService { get; }
 
     }
 }

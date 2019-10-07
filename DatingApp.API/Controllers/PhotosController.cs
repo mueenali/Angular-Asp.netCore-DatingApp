@@ -5,7 +5,6 @@ using DatingApp.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using CloudinaryDotNet;
 using DatingApp.API.Dtos;
 using System.Security.Claims;
 using DatingApp.API.Data.RepositoryInterfaces;
@@ -21,21 +20,14 @@ namespace DatingApp.API.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private Cloudinary _cloudinary;
 
-        private readonly IOptions<CloudinarySettings> _cloudinaryConfig;
+
         public PhotosController(IUnitOfWork unitOfWork, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
         {
-            _cloudinaryConfig = cloudinaryConfig;
+
             _mapper = mapper;
             _unitOfWork = unitOfWork;
 
-            Account account = new Account(
-                _cloudinaryConfig.Value.CloudName,
-                _cloudinaryConfig.Value.ApiKey,
-                _cloudinaryConfig.Value.ApiSecret
-            );
-            _cloudinary = new Cloudinary(account);
         }
 
         [HttpGet("{id}", Name = "GetPhoto")]
@@ -54,29 +46,20 @@ namespace DatingApp.API.Controllers
 
             var user = await _unitOfWork.userRepository.GetEntityWithInclude(u => u.Photos, u => u.ID == userId);
             var file = photoCreateDto.File;
-            var uploadedResult = new ImageUploadResult();
-            if (file.Length > 0)
+
+            if (file != null)
             {
-                using (var stream = file.OpenReadStream())
+                var blob = await _unitOfWork.storageService.UploadImage(file);
+                photoCreateDto.Url = blob.Uri.ToString();
+                photoCreateDto.PublicId = blob.Name.ToString();
+                var photo = _mapper.Map<Photo>(photoCreateDto);
+                _unitOfWork.photoRepository.AddPhoto(user, photo);
+
+                if (await _unitOfWork.Commit())
                 {
-                    var uploadParams = new ImageUploadParams
-                    {
-                        File = new FileDescription(file.Name, stream),
-                        Transformation = new Transformation().Width(500).Height(500).Crop("fill").Gravity("face")
-                    };
-
-                    uploadedResult = _cloudinary.Upload(uploadParams);
+                    var photoToReturn = _mapper.Map<PhotoToReturnDto>(photo);
+                    return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
                 }
-            }
-            photoCreateDto.Url = uploadedResult.Uri.ToString();
-            photoCreateDto.PublicId = uploadedResult.PublicId;
-            var photo = _mapper.Map<Photo>(photoCreateDto);
-            _unitOfWork.photoRepository.AddPhoto(user, photo);
-
-            if (await _unitOfWork.Commit())
-            {
-                var photoToReturn = _mapper.Map<PhotoToReturnDto>(photo);
-                return CreatedAtRoute("GetPhoto", new { id = photo.Id }, photoToReturn);
             }
 
             return BadRequest("Failed to add the photo");
@@ -125,18 +108,14 @@ namespace DatingApp.API.Controllers
 
 
             var photo = await _unitOfWork.photoRepository.GetEntity(id);
-            if (photo.PublicId != null)
+            var deleted = await _unitOfWork.storageService.DeleteImage(photo.PublicId);
+
+            if (deleted)
             {
-                var deleteParams = new DeletionParams(photo.PublicId);
-                var deleteResult = _cloudinary.Destroy(deleteParams);
-
-                if (deleteResult.Result == "ok")
-                    _unitOfWork.photoRepository.Delete(photo);
-
+                _unitOfWork.photoRepository.Delete(photo);
+                if (await _unitOfWork.Commit())
+                    return Ok();
             }
-
-            if (await _unitOfWork.Commit())
-                return Ok();
 
             return BadRequest("Failed to delete the photo");
         }

@@ -1,11 +1,13 @@
 using System.Threading.Tasks;
 using DatingApp.API.Data.RepositoryInterfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace DatingApp.API.Data
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly DataContext _context;
+        private readonly IConfiguration _configuration;
 
         public IAuthRepository authRepository { get; private set; }
 
@@ -13,12 +15,16 @@ namespace DatingApp.API.Data
 
         public IPhotoRepository photoRepository { get; private set; }
 
-        public UnitOfWork(DataContext context)
+        public IStorageService storageService { get; private set; }
+
+        public UnitOfWork(DataContext context, IConfiguration configuration)
         {
-            this._context = context;
+            _context = context;
+            _configuration = configuration;
             authRepository = new AuthRepository(_context);
             userRepository = new UserRepository(_context);
             photoRepository = new PhotoRepository(_context);
+            storageService = new StorageService(_configuration);
         }
         public async Task<bool> Commit()
         {
