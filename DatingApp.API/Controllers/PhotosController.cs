@@ -1,14 +1,11 @@
 
 using System.Threading.Tasks;
 using AutoMapper;
-using DatingApp.API.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using DatingApp.API.Dtos;
 using System.Security.Claims;
 using DatingApp.API.Data.RepositoryInterfaces;
-using CloudinaryDotNet.Actions;
 using DatingApp.API.Models;
 
 namespace DatingApp.API.Controllers
@@ -22,7 +19,7 @@ namespace DatingApp.API.Controllers
         private readonly IMapper _mapper;
 
 
-        public PhotosController(IUnitOfWork unitOfWork, IMapper mapper, IOptions<CloudinarySettings> cloudinaryConfig)
+        public PhotosController(IUnitOfWork unitOfWork, IMapper mapper)
         {
 
             _mapper = mapper;

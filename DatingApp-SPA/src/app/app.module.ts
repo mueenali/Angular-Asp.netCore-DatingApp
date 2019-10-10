@@ -6,9 +6,9 @@ import { AuthGuard } from './_guards/auth.guard';
 import { AlertifyService } from './_services/alertify.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AppComponent } from './app.component';
-import { BsDropdownModule, TabsModule } from 'ngx-bootstrap';
+import {BsDatepickerModule, BsDropdownModule, TabsModule} from 'ngx-bootstrap';
 import { NavComponent } from './nav/nav.component';
 import { AuthService } from './_services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -30,6 +30,8 @@ import { PhotoManagementComponent } from './members/photo-management/photo-manag
 import {FileUploadModule} from 'ng2-file-upload';
 import {PhotoService} from './_services/photo.service';
 
+import {TimeAgoPipe} from 'time-ago-pipe';
+
 export function tokenGetter() {
   return localStorage.getItem('token');
 }
@@ -46,14 +48,17 @@ export function tokenGetter() {
     MemberCardComponent,
     MemberDetailsComponent,
     MemberEditComponent,
-    PhotoManagementComponent
+    PhotoManagementComponent,
+    TimeAgoPipe
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     HttpClientModule,
     TabsModule.forRoot(),
     BsDropdownModule.forRoot(),
+    BsDatepickerModule.forRoot(),
     RouterModule.forRoot(appRoutes),
     NgxGalleryModule,
     JwtModule.forRoot({

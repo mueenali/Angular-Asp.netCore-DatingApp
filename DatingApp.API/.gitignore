@@ -1,5 +1,6 @@
 .vscode
 bin
 appsettings.json
+appsettings.Development.json
 obj
 *.db

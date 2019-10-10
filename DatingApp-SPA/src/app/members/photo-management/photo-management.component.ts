@@ -48,8 +48,13 @@ export class PhotoManagementComponent implements OnInit {
           description: res.description,
           isMain: res.isMain
         };
+
         this.photos.push(res);
         this.alertifyService.success('Photos uploaded successfully');
+
+        if (photo.isMain) {
+          this.updateMainPhoto(photo);
+        }
       }
     };
   }
@@ -64,10 +69,10 @@ export class PhotoManagementComponent implements OnInit {
       }
       this.mainPhoto.isMain = false;
       photo.isMain = true;
-      this.authService.updateCurrentUserMainPhoto(photo.url);
-      this.authService.user.photoUrl = photo.url;
-      localStorage.setItem('user', JSON.stringify(this.authService.user));
+
+      this.updateMainPhoto(photo);
       this.alertifyService.success('Photo set to main successfully');
+
     }, error => {
       this.alertifyService.error(error);
     });
@@ -78,7 +83,13 @@ export class PhotoManagementComponent implements OnInit {
       this.photoService.deletePhoto(this.authService.decodedToken.nameid, id).subscribe(() => {
         this.photos.splice(this.photos.findIndex(photo => photo.id === id), 1);
         this.alertifyService.success('Your photo has been deleted successfully');
-      }, error => this.alertifyService.error('Failed to delete the photo'));
+      }, error => this.alertifyService.error(error));
     });
+  }
+
+  private updateMainPhoto(photo: Photo) {
+    this.authService.updateCurrentUserMainPhoto(photo.url);
+    this.authService.user.photoUrl = photo.url;
+    localStorage.setItem('user', JSON.stringify(this.authService.user));
   }
 }
