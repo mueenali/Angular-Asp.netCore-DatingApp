@@ -9,5 +9,6 @@ namespace DatingApp.API.Data.RepositoryInterfaces
     {
         Task<ICloudBlob> UploadImage(IFormFile imageFile);
         Task<bool> DeleteImage(string publicID);
+
     }
 }

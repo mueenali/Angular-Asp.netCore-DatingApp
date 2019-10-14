@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DatingApp.API.Data.RepositoryInterfaces;
+using DatingApp.API.Helpers;
 using DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,9 +36,9 @@ namespace DatingApp.API.Data
         {
             return await _context.Set<T>().AsNoTracking().ToListAsync();
         }
-        public async Task<IEnumerable<T>> GetAllWithInclude<P>(Expression<Func<T, P>> predicate)
+        public IQueryable<T> GetAllWithInclude<P>(Expression<Func<T, P>> predicate, int pageNumber, int pageSize)
         {
-            return await _context.Set<T>().AsNoTracking().Include(predicate).ToListAsync();
+            return _context.Set<T>().AsNoTracking().Include(predicate).AsQueryable();
         }
         public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
         {

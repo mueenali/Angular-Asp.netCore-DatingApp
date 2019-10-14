@@ -8,7 +8,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AppComponent } from './app.component';
-import {BsDatepickerModule, BsDropdownModule, TabsModule} from 'ngx-bootstrap';
+import {BsDatepickerModule, BsDropdownModule, PaginationModule, TabsModule} from 'ngx-bootstrap';
 import { NavComponent } from './nav/nav.component';
 import { AuthService } from './_services/auth.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -68,7 +68,8 @@ export function tokenGetter() {
         blacklistedRoutes: ['localhost:5000/api/auth']
       }
     }),
-    FileUploadModule
+    FileUploadModule,
+    PaginationModule.forRoot()
   ],
   providers: [
     AuthService,
