@@ -38,7 +38,7 @@ namespace DatingApp.API.Data
         }
         public IQueryable<T> GetAllWithInclude<P>(Expression<Func<T, P>> predicate, int pageNumber, int pageSize)
         {
-            return _context.Set<T>().AsNoTracking().Include(predicate).AsQueryable();
+            return _context.Set<T>().AsNoTracking().Include(predicate);
         }
         public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
         {

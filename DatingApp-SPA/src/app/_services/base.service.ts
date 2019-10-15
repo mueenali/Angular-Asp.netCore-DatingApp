@@ -4,7 +4,6 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from '../../environments/environment';
 import {PaginatedResult} from '../_models/pagination';
 import {map} from 'rxjs/operators';
-import {User} from '../_models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -14,12 +13,17 @@ export abstract class BaseService<T> {
   baseUrl: string = environment.apiUrl;
   protected constructor(public http: HttpClient) { }
 
-  getAll(route: string, page, pageSize): Observable<PaginatedResult<T[]>> {
+  getAll(route: string, page?, pageSize?, filterParams?): Observable<PaginatedResult<T[]>> {
     const paginatedResult: PaginatedResult<T[]> = new PaginatedResult<T[]>();
     let httpParams = new HttpParams();
     if (page != null && pageSize != null) {
       httpParams = httpParams.append('pageNumber', page);
       httpParams = httpParams.append('pageSize', pageSize);
+    }
+
+    if (filterParams != null) {
+      // @ts-ignore
+      Object.entries(filterParams).forEach(([key, value]) => httpParams = httpParams.append(key, value));
     }
 
     return this.http.get<T[]>(this.baseUrl + route, {observe: 'response', params: httpParams}).pipe(
