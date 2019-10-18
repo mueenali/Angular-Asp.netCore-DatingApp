@@ -10,6 +10,8 @@ import { Routes } from '@angular/router';
 import { MemberDetailResolver } from './_resolvers/memberDetail.resolver';
 import { MemberEditResolver } from './_resolvers/memberEdit.resolver';
 import { UnsavedChangesGuard } from './_guards/unsaved-changes.guard';
+import {LikesListResolver} from './_resolvers/likesList.resolver';
+import {MessagesResolver} from './_resolvers/messages.resolver';
 
 export const appRoutes: Routes = [
   { path: '', component: HomeComponent },
@@ -21,8 +23,8 @@ export const appRoutes: Routes = [
       { path: 'members', component: MemberListComponent, resolve: { users: MemberListResolver } },
       { path: 'members/:id', component: MemberDetailsComponent, resolve: { user: MemberDetailResolver } },
       { path: 'member/edit', component: MemberEditComponent, resolve: { user: MemberEditResolver }, canDeactivate: [UnsavedChangesGuard] },
-      { path: 'messages', component: MessagesComponent },
-      { path: 'lists', component: ListsComponent }
+      { path: 'messages', component: MessagesComponent, resolve: {messages: MessagesResolver}},
+      { path: 'lists', component: ListsComponent, resolve: {users: LikesListResolver}}
     ]
   },
   { path: '**', redirectTo: '', pathMatch: 'full' }

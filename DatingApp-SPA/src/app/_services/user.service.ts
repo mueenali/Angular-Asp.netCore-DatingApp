@@ -10,4 +10,8 @@ export class UserService extends BaseService<User> {
   constructor(http: HttpClient) {
     super(http);
   }
+
+  sendLike(id: number, recipientId: number) {
+    return this.http.post(this.baseUrl + 'users/' + id + '/likes/' + recipientId, {});
+  }
 }

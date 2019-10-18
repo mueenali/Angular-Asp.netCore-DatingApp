@@ -31,6 +31,10 @@ import {FileUploadModule} from 'ng2-file-upload';
 import {PhotoService} from './_services/photo.service';
 
 import {TimeAgoPipe} from 'time-ago-pipe';
+import {LikesListResolver} from './_resolvers/likesList.resolver';
+import {MessageService} from './_services/message.service';
+import {MessagesResolver} from './_resolvers/messages.resolver';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -49,7 +53,8 @@ export function tokenGetter() {
     MemberDetailsComponent,
     MemberEditComponent,
     PhotoManagementComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    MemberMessagesComponent
   ],
   imports: [
     BrowserModule,
@@ -80,9 +85,12 @@ export function tokenGetter() {
     UnsavedChangesGuard,
     UserService,
     PhotoService,
+    MessageService,
     MemberDetailResolver,
     MemberEditResolver,
-    MemberListResolver
+    MemberListResolver,
+    LikesListResolver,
+    MessagesResolver
   ],
   bootstrap: [AppComponent]
 })

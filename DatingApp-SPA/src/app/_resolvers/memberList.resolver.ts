@@ -9,9 +9,13 @@ import { catchError } from 'rxjs/operators';
 export class MemberListResolver implements Resolve<User[]> {
   pageNumber = 1;
   pageSize = 6;
-  constructor(private userService: UserService, private router: Router, private alertify: AlertifyService) {}
+  params: any = {};
+  constructor(private userService: UserService, private router: Router, private alertify: AlertifyService) {
+    const user = JSON.parse(localStorage.getItem('user'));
+    user.gender === 'male' ? this.params.gender = 'female' : this.params.gender = 'male';
+  }
   resolve(route: ActivatedRouteSnapshot): Observable<User[]> {
-    return this.userService.getAll('users', this.pageNumber, this.pageSize).pipe(
+    return this.userService.getAll('users', this.pageNumber, this.pageSize, this.params).pipe(
       catchError(error => {
         this.alertify.error('Problem retriving data');
         this.router.navigate(['/home']);

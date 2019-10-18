@@ -17,6 +17,10 @@ namespace DatingApp.API.Data
 
         public IStorageService storageService { get; private set; }
 
+        public ILikeRepository likeRepository { get; private set; }
+
+        public IMessageRepository messageRepository { get; private set; }
+
         public UnitOfWork(DataContext context, IConfiguration configuration)
         {
             _context = context;
@@ -25,6 +29,8 @@ namespace DatingApp.API.Data
             userRepository = new UserRepository(_context);
             photoRepository = new PhotoRepository(_context);
             storageService = new StorageService(_configuration);
+            likeRepository = new LikeRepository(_context);
+            messageRepository = new MessageRepository(_context);
         }
         public async Task<bool> Commit()
         {

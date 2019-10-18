@@ -40,12 +40,15 @@ export abstract class BaseService<T> {
   getOne(route: string, id: number): Observable<T> {
     return  this.http.get<T>(this.baseUrl + route + '/' + id);
   }
+
   add(route: string, model: T) {
     return this.http.post(this.baseUrl + route, model);
   }
+
   delete(route: string, id: number) {
     return this.http.delete(this.baseUrl + route + '/' + id);
   }
+
   update(route: string, id: number, model: T) {
     return this.http.put(this.baseUrl + route + '/' + id, model);
   }
